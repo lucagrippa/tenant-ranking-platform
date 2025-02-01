@@ -66,7 +66,7 @@ export default function FileUpload({ setApplications }: FileUploadProps) {
           results.failed++
           console.error(`Failed to upload ${files[i].name}: ${data.error}`)
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         results.failed++
         console.error(`Failed to upload ${files[i].name}:`, error)
       }

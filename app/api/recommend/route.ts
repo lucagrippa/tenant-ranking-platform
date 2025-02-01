@@ -44,7 +44,7 @@ export async function POST(request: Request): Promise<Response> {
 
     return result.toDataStreamResponse();
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error generating recommendation:", error)
     return new Response(JSON.stringify({ error: "Error generating recommendation" }), { status: 500 })
   }

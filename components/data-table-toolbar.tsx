@@ -15,8 +15,6 @@ interface DataTableToolbarProps<TData> {
 export function DataTableToolbar<TData>({
     table,
 }: DataTableToolbarProps<TData>) {
-    const isFiltered = table.getState().columnFilters.length > 0
-
     const professions = table.getColumn("profession")?.getFacetedUniqueValues()?.entries() ?? []
     const professionOptions = Array.from(professions, ([value]) => ({
         label: value,

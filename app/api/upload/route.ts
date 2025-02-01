@@ -72,12 +72,13 @@ export async function POST(request: Request): Promise<Response> {
             { status: 200 }
         )
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error processing file:', file.name, error)
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
         return new Response(
             JSON.stringify({
                 error: "File processing failed",
-                details: error.message
+                details: errorMessage
             }),
             { status: 500 }
         )
