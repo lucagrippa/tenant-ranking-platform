@@ -14,7 +14,7 @@ export const applicationSchema = z.object({
     hometown: z.string().describe("The hometown of the applicant"),
     proposedRent: z.number().describe("The proposed rent of the applicant in USD."),
     otherOccupants: z.array(z.string()).describe("The other occupants of the applicant"),
-    roommates: z.array(z.string()).describe("The roommates of the applicant"),
+    roommates: z.array(z.string()).describe("Are the other occupants roommates, spouses, etc."),
 })
 
 export type Application = z.infer<typeof applicationSchema> & {

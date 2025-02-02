@@ -53,15 +53,6 @@ export const columns: ColumnDef<Application>[] = [
         },
         filterFn: "arrIncludesSome",
     },
-    // {
-    //     id: "email",
-    //     accessorKey: "email",
-    //     header: () => <div className="text-center">Email</div>,
-    //     cell: ({ row }) => {
-    //         const email: string = row.original.email
-    //         return <div className="text-center sm:block">{email}</div>
-    //     },
-    // },
     {
         accessorKey: "income",
         // header: () => <div className="text-center sm:block">Income</div>,
@@ -166,6 +157,7 @@ export const columns: ColumnDef<Application>[] = [
             return (
                 <Button
                     variant="outline"
+                    size="icon"
                     onClick={() => {
                         // remove row from local storage
                         meta.removeRow(row.original.id)
@@ -173,10 +165,8 @@ export const columns: ColumnDef<Application>[] = [
                         table.setRowSelection({
                             [row.id]: false,
                         })
-                        // TODO: Implement delete functionality
-                        console.log('Delete clicked for row:', row.original)
                     }}
-                    className="w-full flex justify-center rounded-full"
+                    className="w-full flex justify-center rounded-full px-2"
                 >
                     <X className="h-4 cursor-pointer" />
                 </Button>

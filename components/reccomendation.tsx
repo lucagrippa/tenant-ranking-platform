@@ -26,17 +26,22 @@ export default function Reccomendation({ applications }: ReccomendationProps) {
         : '';
 
     return (
-        <div>
-            <h2 className="text-2xl font-bold mb-4">AI Recommendation</h2>
-            <Button onClick={() => complete('')} className="mb-4">Generate AI Recommendation</Button>
-            <div className="prose prose-sm max-w-none">
-              {completion && (
-                <div 
-                  className="p-4 bg-white rounded-lg shadow prose prose-md max-w-none"
-                  dangerouslySetInnerHTML={{ __html: contentHtml }} 
-                />
-              )}
+        <div className="space-y-4">
+            <div className="space-y-1">
+                <h4 className="text-2xl font-bold mb-0">Step 3: Generate AI Recommendation 🤖</h4>
+                <p className="text-sm text-muted-foreground">
+                    Generate a recommendation for which applicants to accept.
+                </p>
             </div>
+            <Button onClick={() => complete('')} className="mb-4">Generate AI Recommendation</Button>
+            {completion && (
+                <div className="prose prose-sm max-w-none border rounded-lg">
+                    <div
+                        className="p-4 bg-white rounded-lg shadow prose prose-md max-w-none"
+                        dangerouslySetInnerHTML={{ __html: contentHtml }}
+                    />
+                </div>
+            )}
         </div>
     )
 }

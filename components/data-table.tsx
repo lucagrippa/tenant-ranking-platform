@@ -31,13 +31,13 @@ import { Application } from "@/lib/application"
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
-    setData: React.Dispatch<React.SetStateAction<TData[]>>
+    setData: React.Dispatch<React.SetStateAction<Application[]>>
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
-    setData
+    setData,
 }: DataTableProps<TData, TValue>) {
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -70,6 +70,12 @@ export function DataTable<TData, TValue>({
 
     return (
         <div className="space-y-4">
+            <div className="space-y-1">
+                <h4 className="text-2xl font-bold mb-0">Step 2: View Applications 📄</h4>
+                <p className="text-sm text-muted-foreground">
+                    View all the applications in the table.
+                </p>
+            </div>
             <DataTableToolbar table={table} />
             <div className="rounded-md border">
                 <Table>

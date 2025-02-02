@@ -22,11 +22,17 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="container mx-auto p-4 space-y-8">
-      <h1 className="text-3xl font-bold">Tenant Ranking Platform</h1>
-      <Reccomendation applications={applications} />
-      <DataTable data={applications} columns={columns} setData={setApplications} />
+    <main className="container mx-auto p-4 space-y-8 mb-8">
+      <div className="space-y-1">
+        <h1 className="text-3xl font-bold">Tenant Ranking Platform</h1>
+        <p className="text-sm text-muted-foreground">
+          {/* TODO: Add a description of the platform, I'm a tenant who made this platform for the owner of the apartment I want to rent. */}
+          Hope this can help you find the best tenant for your apartment.
+        </p>
+      </div>
       <FileUpload setApplications={setApplications} />
+      <DataTable data={applications} columns={columns} setData={setApplications} />
+      <Reccomendation applications={applications} />
     </main>
   )
 }

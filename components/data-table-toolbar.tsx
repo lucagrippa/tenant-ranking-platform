@@ -25,7 +25,7 @@ export function DataTableToolbar<TData>({
         <div className="flex items-center justify-between">
             <div className="flex flex-1 items-center space-x-2">
                 <Input
-                    placeholder="Search applicants by name..."
+                    placeholder="Search by name..."
                     value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                         table.getColumn("name")?.setFilterValue(event.target.value)

@@ -19,7 +19,6 @@ export default function FileUpload({ setApplications }: FileUploadProps) {
   const [files, setFiles] = useState<File[]>([])
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
   const [progress, setProgress] = useState(0)
   const router = useRouter()
 
@@ -27,7 +26,29 @@ export default function FileUpload({ setApplications }: FileUploadProps) {
     if (e.target.files) {
       setFiles(Array.from(e.target.files))
       setError(null)
-      setSuccess(null)
+    }
+  }
+
+  const uploadFile = async (file: File) => {
+    const formData = new FormData()
+    formData.append("files", file)
+
+    try {
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      })
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error)
+      }
+
+      setApplications(prev => [...prev, data.application])
+      return data.application
+    } catch (error) {
+      console.error(`Failed to upload ${file.name}:`, error)
+      return null
     }
   }
 
@@ -40,45 +61,21 @@ export default function FileUpload({ setApplications }: FileUploadProps) {
 
     setUploading(true)
     setError(null)
-    setSuccess(null)
     setProgress(0)
 
-    const results = {
-      applications: [] as Application[],
-      failed: 0
-    }
+    const completedUploads = await Promise.all(
+      files.map(async (file) => {
+        const application = await uploadFile(file)
+        setProgress(prev => prev + (100 / files.length))
+        return application
+      })
+    )
 
-    for (let i = 0; i < files.length; i++) {
-      const formData = new FormData()
-      formData.append("files", files[i])
+    const successfulUploads = completedUploads.filter((app): app is Application => app !== null)
+    const failedCount = completedUploads.length - successfulUploads.length
 
-      try {
-        const response = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        })
-        const data = await response.json()
-
-        if (response.ok) {
-          results.applications.push(data.application)
-          setApplications(prevApplications => [...prevApplications, data.application] as Application[])
-        } else {
-          results.failed++
-          console.error(`Failed to upload ${files[i].name}: ${data.error}`)
-        }
-      } catch (error: unknown) {
-        results.failed++
-        console.error(`Failed to upload ${files[i].name}:`, error)
-      }
-
-      // Update progress after each file
-      setProgress(((i + 1) / files.length) * 100)
-    }
-
-    // Save results and update final state
-    if (results.applications.length > 0) {
-      localStorage.setItem("applications", JSON.stringify(results.applications))
-      setSuccess(`Successfully processed ${results.applications.length} files${results.failed > 0 ? ` (${results.failed} failed)` : ""}`)
+    if (successfulUploads.length > 0) {
+      localStorage.setItem("applications", JSON.stringify(successfulUploads))
       setFiles([])
       router.refresh()
     } else {
@@ -90,6 +87,12 @@ export default function FileUpload({ setApplications }: FileUploadProps) {
 
   return (
     <div className="space-y-4">
+      <div className="space-y-1">
+        <h4 className="text-2xl font-bold mb-0">Step 1: Upload Applications 📁</h4>
+        <p className="text-sm text-muted-foreground">
+          Upload all the applications to view them in the table. (Excel, PDF, or TXT)
+        </p>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex items-center gap-4">
           <Input type="file" onChange={handleFileChange} multiple accept=".xlsx,.pdf,.txt" disabled={uploading} />
@@ -124,11 +127,6 @@ export default function FileUpload({ setApplications }: FileUploadProps) {
         </Alert>
       )}
 
-      {success && (
-        <Alert>
-          <AlertDescription>{success}</AlertDescription>
-        </Alert>
-      )}
     </div>
   )
 }
