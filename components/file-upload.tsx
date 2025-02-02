@@ -72,7 +72,6 @@ export default function FileUpload({ setApplications }: FileUploadProps) {
     )
 
     const successfulUploads = completedUploads.filter((app): app is Application => app !== null)
-    const failedCount = completedUploads.length - successfulUploads.length
 
     if (successfulUploads.length > 0) {
       localStorage.setItem("applications", JSON.stringify(successfulUploads))
