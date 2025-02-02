@@ -128,7 +128,7 @@ export const columns: ColumnDef<Application>[] = [
         header: () => <div className="text-center sm:block">Roommates</div>,
         cell: ({ row }) => {
             const roommates: string[] = row.getValue("roommates")
-            return <div className="text-center sm:block">{roommates.length}</div>
+            return <div className="text-center sm:block">{roommates.join(", ")}</div>
         },
     },
     {
