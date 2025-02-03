@@ -15,9 +15,15 @@ export default function Home() {
 
   // get applications from local storage if they exist
   useEffect(() => {
-    const applications = localStorage.getItem("applications")
-    if (applications) {
-      setApplications(JSON.parse(applications))
+    try {
+      const storedApplications = localStorage.getItem("applications")
+      if (storedApplications) {
+        const parsedApplications = JSON.parse(storedApplications)
+        setApplications(Array.isArray(parsedApplications) ? parsedApplications : [])
+      }
+    } catch (error) {
+      console.error('Failed to load applications from localStorage:', error)
+      // Optionally set an error state here
     }
   }, [])
 
