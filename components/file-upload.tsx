@@ -44,10 +44,16 @@ export default function FileUpload({ setApplications }: FileUploadProps) {
         throw new Error(data.error)
       }
 
-      setApplications(prev => [...prev, data.application])
+      setApplications(prev => {
+        const filtered = prev.filter(app =>
+          `${app.firstName} ${app.lastName}` !== `${data.application.firstName} ${data.application.lastName}`
+        )
+        return [...filtered, data.application]
+      })
       return data.application
     } catch (error) {
-      console.error(`Failed to upload ${file.name}:`, error)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+      setError(`Failed to upload ${file.name}: ${errorMessage}`)
       return null
     }
   }
@@ -74,11 +80,27 @@ export default function FileUpload({ setApplications }: FileUploadProps) {
     const successfulUploads = completedUploads.filter((app): app is Application => app !== null)
 
     if (successfulUploads.length > 0) {
-      localStorage.setItem("applications", JSON.stringify(successfulUploads))
+      const existingApps = JSON.parse(localStorage.getItem("applications") || "[]")
+      const mergedApps = [...existingApps, ...successfulUploads].reduce((acc: Application[], current: Application) => {
+        const existingIndex = acc.findIndex((app: Application) =>
+          `${app.firstName} ${app.lastName}` === `${current.firstName} ${current.lastName}`
+        )
+        if (existingIndex >= 0) {
+          acc[existingIndex] = current
+        } else {
+          acc.push(current)
+        }
+        return acc
+      }, [] as Application[])
+
+      localStorage.setItem("applications", JSON.stringify(mergedApps))
       setFiles([])
+      setApplications(mergedApps)
       router.refresh()
-    } else {
-      setError("No files were successfully processed")
+    }
+
+    if (completedUploads.length !== files.length) {
+      setError(`${files.length - successfulUploads.length} file(s) failed to process`)
     }
 
     setUploading(false)
@@ -95,7 +117,7 @@ export default function FileUpload({ setApplications }: FileUploadProps) {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex items-center gap-4">
           <Input type="file" onChange={handleFileChange} multiple accept=".xlsx,.pdf,.txt" disabled={uploading} />
-          <Button type="submit" disabled={uploading || files.length === 0}>
+          <Button type="submit" disabled={uploading || files.length === 0} className="font-semibold">
             {uploading ? (
               <>
                 <Upload className="mr-2 h-4 w-4 animate-spin" />
