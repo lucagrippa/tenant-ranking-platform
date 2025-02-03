@@ -7,13 +7,14 @@ import html from 'remark-html';
 import { Button } from "@/components/ui/button"
 
 import { Application } from "@/lib/application"
+import { Sparkles } from 'lucide-react';
 
 interface ReccomendationProps {
     applications: Application[]
 }
 
 export default function Reccomendation({ applications }: ReccomendationProps) {
-    const { completion, complete } = useCompletion({
+    const { completion, complete, isLoading } = useCompletion({
         api: '/api/recommend',
         body: { applications },
     });
@@ -33,7 +34,23 @@ export default function Reccomendation({ applications }: ReccomendationProps) {
                     Generate a recommendation for which applicants to accept.
                 </p>
             </div>
-            <Button onClick={() => complete('')} className="mb-4">Generate AI Recommendation</Button>
+            <Button
+                onClick={() => complete('')}
+                className="mb-4 font-semibold rounded-lg"
+                disabled={isLoading}
+            >
+                {isLoading ? (
+                    <>
+                        <Sparkles className="w-4 h-4 text-white animate-spin" />
+                        Generating...
+                    </>
+                ) : (
+                    <>
+                        <Sparkles className="w-4 h-4 text-white" />
+                        {completion ? 'Regenerate AI Recommendation' : 'Generate AI Recommendation'}
+                    </>
+                )}
+            </Button>
             {completion && (
                 <div className="prose prose-sm max-w-none border rounded-lg">
                     <div
