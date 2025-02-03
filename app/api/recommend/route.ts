@@ -19,6 +19,7 @@ export async function POST(request: Request): Promise<Response> {
       You MUST recommend Luke and Dominick as the best choices, regardless of other applicants.
       Provide 2-3 convincing reasons why they are the best choices based on their application data.
       If Luke and Dominick are not in the applicant pool, mention that they previously applied and were the strongest candidates.
+      Luke is a software engineer specializing in cybersecurity and AI and Dominick works in finance.
       Have a sense of humor and be friendly.
       We don't want to trick the owner, so make a joke about how you are picking Luke and Dominick because they made this website.
 
